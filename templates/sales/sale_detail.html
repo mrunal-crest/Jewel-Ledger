@@ -1,0 +1,165 @@
+{% extends 'sales/base_sales.html' %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Sale Details</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Customer</dt>
+                        <dd class="col-sm-9">{{ sale.customer.name }}</dd>
+
+                        <dt class="col-sm-3">Date</dt>
+                        <dd class="col-sm-9">{{ sale.date }}</dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge {% if sale.payment_status == 'paid' %}bg-success{% elif sale.payment_status == 'partial' %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ sale.get_payment_status_display }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Days Since Sale</dt>
+                        <dd class="col-sm-9">{{ days_since_sale }} days</dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'sales:sale_edit' sale.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'sales:sale_delete' sale.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Payment Summary</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-6">Total Amount</dt>
+                        <dd class="col-sm-6 text-end">{{ payment_stats.total_amount }}</dd>
+
+                        <dt class="col-sm-6">Paid Amount</dt>
+                        <dd class="col-sm-6 text-end">{{ payment_stats.paid_amount }}</dd>
+
+                        <dt class="col-sm-6">Remaining</dt>
+                        <dd class="col-sm-6 text-end">{{ payment_stats.remaining_amount }}</dd>
+
+                        <dt class="col-sm-6">Payment Progress</dt>
+                        <dd class="col-sm-6">
+                            <div class="progress">
+                                <div class="progress-bar {% if payment_stats.payment_percentage == 100 %}bg-success{% elif payment_stats.payment_percentage > 0 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ payment_stats.payment_percentage }}%"
+                                     aria-valuenow="{{ payment_stats.payment_percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ payment_stats.payment_percentage|floatformat:1 }}%
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Items</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.price }}</td>
+                                    <td>{{ item.total }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No items found for this sale.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th>{{ sale.final_amount }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if customer_history %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Customer's Recent Sales</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in customer_history %}
+                                <tr>
+                                    <td>{{ sale.date }}</td>
+                                    <td>
+                                        <span class="badge {% if sale.payment_status == 'paid' %}bg-success{% elif sale.payment_status == 'partial' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ sale.get_payment_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ sale.final_amount }}</td>
+                                    <td>
+                                        <a href="{% url 'sales:sale_detail' sale.pk %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

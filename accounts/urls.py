@@ -13,9 +13,10 @@ router.register(r'profile', api_views.UserProfileViewSet, basename='profile')
 
 urlpatterns = [
     # Web URLs
-    path('register/', views.register, name='register'),
-    path('profile/', views.profile, name='profile'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
     path('create-business/', views.create_business, name='create_business'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     
     # API URLs
     path('api/', include(router.urls)),

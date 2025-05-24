@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Purchase - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">{% if form.instance.pk %}Edit{% else %}New{% endif %} Purchase</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="purchase-form">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.supplier.id_for_label }}">Supplier</label>
+                                    {{ form.supplier }}
+                                    {% if form.supplier.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.supplier.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.date.id_for_label }}">Date</label>
+                                    {{ form.date }}
+                                    {% if form.date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.date.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.payment_status.id_for_label }}">Payment Status</label>
+                                    {{ form.payment_status }}
+                                    {% if form.payment_status.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.payment_status.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Items</h4>
+                        {{ formset.management_form }}
+                        <div id="items-container">
+                            {% for form in formset %}
+                            <div class="item-form mb-3 p-3 border rounded">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ form.product.id_for_label }}">Product</label>
+                                            {{ form.product }}
+                                            {% if form.product.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.product.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.quantity.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="{{ form.price.id_for_label }}">Price</label>
+                                            {{ form.price }}
+                                            {% if form.price.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.price.errors }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="d-block">&nbsp;</label>
+                                            <button type="button" class="btn btn-danger remove-item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-secondary" id="add-item">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <a href="{% url 'purchases:purchase_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Purchase</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('#items-container');
+    const addButton = document.querySelector('#add-item');
+    const totalForms = document.querySelector('#id_items-TOTAL_FORMS');
+    const emptyForm = document.querySelector('.item-form').cloneNode(true);
+
+    // Add new item form
+    addButton.addEventListener('click', function() {
+        const formCount = container.children.length;
+        const newForm = emptyForm.cloneNode(true);
+        
+        // Update form index
+        newForm.innerHTML = newForm.innerHTML.replace(/items-\d+/g, `items-${formCount}`);
+        
+        // Clear values
+        newForm.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+        newForm.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+        
+        container.appendChild(newForm);
+        totalForms.value = formCount + 1;
+    });
+
+    // Remove item form
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item') || e.target.parentElement.classList.contains('remove-item')) {
+            const itemForm = e.target.closest('.item-form');
+            if (container.children.length > 1) {
+                itemForm.remove();
+                totalForms.value = container.children.length;
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

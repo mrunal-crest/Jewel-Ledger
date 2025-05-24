@@ -2,13 +2,22 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from ..models import Sale, SaleItem
-from .serializers import SaleSerializer, SaleItemSerializer
+from ..models import Customer, Sale, SaleItem
+from .serializers import CustomerSerializer, SaleSerializer, SaleItemSerializer
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Customer.objects.filter(business=self.request.user.userprofile.business)
 
 class SaleViewSet(viewsets.ModelViewSet):
+    queryset = Sale.objects.all()
     serializer_class = SaleSerializer
     permission_classes = [IsAuthenticated]
-
+    
     def get_queryset(self):
         return Sale.objects.filter(business=self.request.user.userprofile.business)
 

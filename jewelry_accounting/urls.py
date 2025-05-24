@@ -18,12 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import CustomLoginView
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('', RedirectView.as_view(pattern_name='accounts:login'), name='home'),
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('accounts/login/', CustomLoginView.as_view(), name='login'),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('api/', include('core.api.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('business/', include('business.urls')),
+    path('inventory/', include('inventory.urls')),
+    path('sales/', include('sales.urls')),
+    path('purchases/', include('purchases.urls')),
+    path('reports/', include('reports.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

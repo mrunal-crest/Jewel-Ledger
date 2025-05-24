@@ -1,0 +1,77 @@
+{% extends 'inventory/base_inventory.html' %}
+
+{% block title %}{{ product.name }} - Jewelry Accounting{% endblock %}
+
+{% block inventory_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ product.name }}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'inventory:product_edit' product.pk %}" class="btn btn-sm btn-outline-primary me-2">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'inventory:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Product Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">SKU</dt>
+                    <dd class="col-sm-8">{{ product.sku }}</dd>
+                    
+                    <dt class="col-sm-4">Category</dt>
+                    <dd class="col-sm-8">{{ product.category.name }}</dd>
+                    
+                    <dt class="col-sm-4">Unit Price</dt>
+                    <dd class="col-sm-8">${{ product.unit_price|floatformat:2 }}</dd>
+                    
+                    <dt class="col-sm-4">Quantity</dt>
+                    <dd class="col-sm-8">{{ product.quantity }}</dd>
+                    
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge {% if product.quantity <= product.low_stock_threshold %}bg-danger{% else %}bg-success{% endif %}">
+                            {% if product.quantity <= product.low_stock_threshold %}Low Stock{% else %}In Stock{% endif %}
+                        </span>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Low Stock Threshold</dt>
+                    <dd class="col-sm-8">{{ product.low_stock_threshold }}</dd>
+                    
+                    {% if product.description %}
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">{{ product.description }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Inventory Value</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <h6 class="text-muted">Total Value</h6>
+                        <h3>${{ product.total_value|floatformat:2 }}</h3>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="text-muted">Last Updated</h6>
+                        <h3>{{ product.updated_at|date:"M d, Y" }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

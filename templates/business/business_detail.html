@@ -1,0 +1,101 @@
+{% extends 'business/base_business.html' %}
+
+{% block title %}{{ business.name }} - Jewelry Accounting{% endblock %}
+
+{% block business_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ business.name }}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'business:business_edit' business.pk %}" class="btn btn-sm btn-outline-primary me-2">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'business:business_delete' business.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Business Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    {% if business.description %}
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">{{ business.description }}</dd>
+                    {% endif %}
+                    
+                    {% if business.address %}
+                    <dt class="col-sm-4">Address</dt>
+                    <dd class="col-sm-8">{{ business.address }}</dd>
+                    {% endif %}
+                    
+                    {% if business.phone %}
+                    <dt class="col-sm-4">Phone</dt>
+                    <dd class="col-sm-8">{{ business.phone }}</dd>
+                    {% endif %}
+                    
+                    {% if business.email %}
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">{{ business.email }}</dd>
+                    {% endif %}
+                    
+                    {% if business.website %}
+                    <dt class="col-sm-4">Website</dt>
+                    <dd class="col-sm-8">
+                        <a href="{{ business.website }}" target="_blank">{{ business.website }}</a>
+                    </dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Business Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Sales</h6>
+                                <h2 class="card-text">{{ total_sales }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Products</h6>
+                                <h2 class="card-text">{{ total_products }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Customers</h6>
+                                <h2 class="card-text">{{ total_customers }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Suppliers</h6>
+                                <h2 class="card-text">{{ total_suppliers }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

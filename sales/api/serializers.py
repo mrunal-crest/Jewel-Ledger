@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from ..models import Sale, SaleItem
+from ..models import Customer, Sale, SaleItem
 from inventory.models import Product
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
 
 class SaleItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)

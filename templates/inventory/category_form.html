@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Category - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{% if form.instance.pk %}Edit{% else %}New{% endif %} Category</h1>
+    <a href="{% url 'inventory:category_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left fa-sm fa-fw me-2"></i>Back to List
+    </a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Category Information</h6>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.name|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {{ form.description|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save fa-sm fa-fw me-2"></i>Save Category
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

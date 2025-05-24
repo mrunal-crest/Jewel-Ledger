@@ -1,0 +1,24 @@
+{% extends 'reports/base_reports.html' %}
+
+{% block title %}Delete Report - Jewelry Accounting{% endblock %}
+
+{% block reports_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Delete Report</h1>
+</div>
+
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Warning!</h4>
+    <p>Are you sure you want to delete the report "{{ object.name }}"? This action cannot be undone.</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Delete
+    </button>
+    <a href="{% url 'reports:report_list' %}" class="btn btn-secondary">
+        <i class="fas fa-times"></i> Cancel
+    </a>
+</form>
+{% endblock %} 

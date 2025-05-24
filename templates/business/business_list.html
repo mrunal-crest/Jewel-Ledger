@@ -1,0 +1,62 @@
+{% extends 'business/base_business.html' %}
+
+{% block title %}Businesses - Jewelry Accounting{% endblock %}
+
+{% block business_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Businesses</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'business:business_create' %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus"></i> New Business
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    {% for business in businesses %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ business.name }}</h5>
+                {% if business.description %}
+                <p class="card-text">{{ business.description|truncatechars:100 }}</p>
+                {% endif %}
+                <div class="row text-center mt-3">
+                    <div class="col-4">
+                        <h6 class="text-muted">Sales</h6>
+                        <h4>{{ business.sales.count }}</h4>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="text-muted">Products</h6>
+                        <h4>{{ business.products.count }}</h4>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="text-muted">Customers</h6>
+                        <h4>{{ business.customers.count }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="btn-group w-100">
+                    <a href="{% url 'business:business_detail' business.pk %}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                    <a href="{% url 'business:business_edit' business.pk %}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'business:business_delete' business.pk %}" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No businesses found. Create your first business to get started.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

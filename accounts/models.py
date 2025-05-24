@@ -6,7 +6,7 @@ from business.models import Business
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
-    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='users')
+    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='users', null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     address = models.TextField(blank=True)
     role = models.CharField(max_length=50, blank=True)

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Details - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Purchase Details</h1>
+    <div>
+        <a href="{% url 'purchases:purchase_edit' purchase.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit fa-sm fa-fw mr-2"></i>Edit
+        </a>
+        <a href="{% url 'purchases:purchase_delete' purchase.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash fa-sm fa-fw mr-2"></i>Delete
+        </a>
+        <a href="{% url 'purchases:purchase_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left fa-sm fa-fw mr-2"></i>Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Purchase Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Invoice Number:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.invoice_number }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Date:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.date }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Supplier:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.supplier.name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Additional Cost:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        ${{ purchase.additional_cost }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Total Amount:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        ${{ purchase.final_amount }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Payment Status:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        <span class="badge {% if purchase.payment_status %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if purchase.payment_status %}Paid{% else %}Pending{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Transaction Details</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Transaction ID:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.transaction.id }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Transaction Date:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.transaction.date }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4">
+                        <strong>Transaction Type:</strong>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ purchase.transaction.get_transaction_type_display }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Purchase Items</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in purchase.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">Subtotal:</th>
+                        <td>${{ purchase.transaction.total_amount }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="3" class="text-end">Additional Cost:</th>
+                        <td>${{ purchase.additional_cost }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="3" class="text-end">Total:</th>
+                        <td><strong>${{ purchase.final_amount }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

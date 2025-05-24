@@ -1,0 +1,27 @@
+{% extends 'inventory/base_inventory.html' %}
+
+{% block title %}Delete Category - Jewelry Accounting{% endblock %}
+
+{% block inventory_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Delete Category</h1>
+</div>
+
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Warning!</h4>
+    <p>Are you sure you want to delete the category "{{ object.name }}"? This action cannot be undone.</p>
+    {% if object.products.exists %}
+    <p class="mb-0"><strong>Note:</strong> This category has {{ object.products.count }} products associated with it. Deleting this category will remove the category from these products.</p>
+    {% endif %}
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Delete
+    </button>
+    <a href="{% url 'inventory:category_list' %}" class="btn btn-secondary">
+        <i class="fas fa-times"></i> Cancel
+    </a>
+</form>
+{% endblock %} 

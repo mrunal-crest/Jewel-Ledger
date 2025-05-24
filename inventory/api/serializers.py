@@ -1,11 +1,22 @@
 from rest_framework import serializers
-from ..models import Product
+from ..models import Category, SubCategory, Product
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    
+    class Meta:
+        model = SubCategory
+        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
+    
     class Meta:
         model = Product
-        fields = [
-            'id', 'name', 'category', 'description', 'stock_quantity',
-            'cost_price', 'selling_price', 'business', 'created_at', 'updated_at'
-        ]
-        read_only_fields = ['id', 'business', 'created_at', 'updated_at'] 
+        fields = '__all__' 
