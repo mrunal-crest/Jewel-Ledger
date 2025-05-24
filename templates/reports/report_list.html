@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Reports - Jewelry Accounting{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Reports</h2>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sales Reports -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Sales Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'reports:sales_summary' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-line"></i> Sales Summary
+                    </a>
+                    <a href="{% url 'reports:sales_by_product' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-box"></i> Sales by Product
+                    </a>
+                    <a href="{% url 'reports:sales_by_category' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tags"></i> Sales by Category
+                    </a>
+                    <a href="{% url 'reports:sales_by_customer' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users"></i> Sales by Customer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Reports -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Purchase Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'reports:purchases_summary' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-bar"></i> Purchases Summary
+                    </a>
+                    <a href="{% url 'reports:purchases_by_supplier' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-truck"></i> Purchases by Supplier
+                    </a>
+                    <a href="{% url 'reports:purchases_by_category' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tags"></i> Purchases by Category
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Reports -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Inventory Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'reports:inventory_status' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-boxes"></i> Current Inventory Status
+                    </a>
+                    <a href="{% url 'reports:low_stock' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-exclamation-triangle"></i> Low Stock Alert
+                    </a>
+                    <a href="{% url 'reports:inventory_value' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-dollar-sign"></i> Inventory Value
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Reports -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Financial Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'reports:profit_loss' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-pie"></i> Profit & Loss Statement
+                    </a>
+                    <a href="{% url 'reports:cash_flow' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-money-bill-wave"></i> Cash Flow Statement
+                    </a>
+                    <a href="{% url 'reports:balance_sheet' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-balance-scale"></i> Balance Sheet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Date Range Filter Modal -->
+<div class="modal fade" id="dateRangeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Date Range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="dateRangeForm">
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-control" name="start_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-control" name="end_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="dateRangeForm" class="btn btn-primary">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Handle report links that require date range
+    $('.list-group-item').click(function(e) {
+        if ($(this).data('requires-date-range')) {
+            e.preventDefault();
+            $('#dateRangeModal').modal('show');
+            $('#dateRangeForm').attr('action', $(this).attr('href'));
+        }
+    });
+
+    // Handle date range form submission
+    $('#dateRangeForm').submit(function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        const startDate = form.find('[name=start_date]').val();
+        const endDate = form.find('[name=end_date]').val();
+        
+        window.location.href = `${url}?start_date=${startDate}&end_date=${endDate}`;
+    });
+});
+</script>
+{% endblock %} 
